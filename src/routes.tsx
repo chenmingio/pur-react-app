@@ -1,14 +1,18 @@
 import React, {ReactElement} from "react";
-import AddCircle from "@material-ui/icons/Mail";
-import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
+import {RouteComponentProps} from 'react-router-dom'
 import {ProjectInput} from "./components/projectSingle/ProjectInput";
 import {ProjectReport} from "./components/projectReport/ProjectReport";
 import {SourcingDoc} from "./components/SourcingDoc";
-import {RouteComponentProps} from 'react-router-dom'
+import {Uploader} from "./components/Uploader";
+import {About} from "./components/About";
+import {QuickSearch} from "./components/QuickSearch";
 import DescriptionIcon from '@material-ui/icons/Description';
 import PublishIcon from '@material-ui/icons/Publish';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
-import {Uploader} from "./components/Uploader";
+import EqualizerIcon from '@material-ui/icons/Equalizer';
+import ListIcon from '@material-ui/icons/List';
+import SearchIcon from '@material-ui/icons/Search';
+import AddCircle from "@material-ui/icons/Mail";
 
 export type page = {
     name: string
@@ -19,6 +23,18 @@ export type page = {
 
 export const pages: page[] = [
     {
+        path: `/`,
+        name: 'About App',
+        icon: <ListIcon/>,
+        component: About
+    },
+    {
+        path: `/search`,
+        name: 'Quick Search',
+        icon: <SearchIcon/>,
+        component: QuickSearch
+    },
+    {
         path: `/project`,
         name: 'Project Info',
         icon: <AddCircle/>,
@@ -27,7 +43,7 @@ export const pages: page[] = [
     {
         path: '/project_report',
         name: 'Project Report',
-        icon: <FormatListBulletedIcon/>,
+        icon: <EqualizerIcon/>,
         component: ProjectReport
     },
     {
@@ -46,6 +62,6 @@ export const pages: page[] = [
         path: '/tutorial',
         name: "Tutorial",
         icon: <PlayCircleOutlineIcon/>,
-        component: SourcingDoc
+        component: About
     },
 ]

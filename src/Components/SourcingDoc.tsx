@@ -52,7 +52,7 @@ export const SourcingDoc = () => {
     const classes = useStyles();
 
 
-    let url: string = `http://${document.domain}:8080`
+    const url: string = `http://${document.domain}:8080`
 
     const initSource: SourceProps = {
         project: "",

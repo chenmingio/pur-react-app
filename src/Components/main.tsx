@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const switchPages = pages.map(
     (item: page, key: number) =>
-        <Route
+        <Route exact
             path={item.path}
             component={item.component}
             key={key}

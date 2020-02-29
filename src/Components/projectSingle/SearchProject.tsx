@@ -21,6 +21,10 @@ export const SearchProject = (props:any) => {
         setProjectID(value)
     }
 
+    const handleClose = () => {
+        setOpen(false)
+    }
+
     const handleClick_searchProject = () => {
         searchProject(projectID)
         setOpen(false)
@@ -29,7 +33,7 @@ export const SearchProject = (props:any) => {
 
     return (
         <Fragment>
-            <Dialog open={open}>
+            <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Enter Project ID</DialogTitle>
                 <DialogContent>
                     <TextField
