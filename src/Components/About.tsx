@@ -4,13 +4,16 @@ import {Grid, Link} from "@material-ui/core";
 export const About = () => {
     return (
         <Grid container>
-            <p>This Web App is just demo.</p>
-            <p>We use it to explore the possibility of digitisation in purchasing function.</p>
-            <p>If you have new idea, suggestion or bug report, email to:
-                <Link href="mailto: ming.chen@hella.com">
-                 ming.chen@hella.com.
-                </Link>
-            </p>
+            <Grid item xs={12}>
+                <p>This Web App is just demo. IE11 is supported. Win10 built-in browser Edge is faster.</p>
+            </Grid>
+            <Grid item>
+                <p> {"If you have any new idea, suggestion or bug report, email to "}
+                    <Link href="mailto: ming.chen@hella.com">
+                        ming.chen@hella.com.
+                    </Link>
+                </p>
+            </Grid>
         </Grid>
     )
 }

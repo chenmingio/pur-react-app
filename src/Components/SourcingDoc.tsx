@@ -10,7 +10,7 @@ import {
     Button,
     Grid,
     Box,
-    Input, Checkbox, ListItemText
+    Input, Checkbox, ListItemText, FormHelperText
 } from "@material-ui/core";
 import GetAppIcon from '@material-ui/icons/GetApp';
 
@@ -51,7 +51,6 @@ export const SourcingDoc = () => {
 
     const classes = useStyles();
 
-
     const url: string = `http://${document.domain}:8080`
 
     const initSource: SourceProps = {
@@ -84,15 +83,14 @@ export const SourcingDoc = () => {
     const handleProjectBlur = () => {
         if (source.file_selected === "nomination letter") {
             fetchVendor()
-        } else if (source.file_selected === "risk evaluation") {
+        } else {
             fetchPart_Project()
         }
     }
 
     const fetchVendor = () => {
-        //TODO check if any project is less than 11
-        const project = source.project
-        if (project.length > 11) {
+        const project = source.project.trim()
+        if (project.length > 10) {
             const url_string: string = `${url}/project/${project}/vendors`
             axios.get(url_string).then(res => {
                 setSource({
@@ -114,27 +112,30 @@ export const SourcingDoc = () => {
     function fetchPart_Project() {
 
         const url_string: string = `${url}/project/${source.project}/parts`
-        axios.get(url_string).then(res => {
-            setSource({
-                ...source,
-                part_available: (res.data) ? res.data.concat(["all"]) : [],
-                part_selected: [],
+        // control project length
+        if (source.project.length > 10) {
+            axios.get(url_string).then(res => {
+                setSource({
+                    ...source,
+                    part_available: res.data,
+                    part_selected: [],
+                })
+            }).catch(err => {
+                console.log(err)
             })
-        }).catch(err => {
-            console.log(err)
-        })
+        }
     }
 
 
     function handleVendorSelect(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-        const vendor = event.target.value
+        const vendor = event.target.value.trim()
 
         const url_string: string = `${url}/project/${source.project}/vendor/${vendor}/parts`
         axios.get(url_string).then(res => {
             setSource({
                 ...source,
                 vendor_selected: vendor,
-                part_available: (res.data) ? res.data.concat(["all"]) : [],
+                part_available: res.data,
                 part_selected: [],
             })
         }).catch(err => {
@@ -142,31 +143,6 @@ export const SourcingDoc = () => {
         })
     }
 
-
-
-
-    // function handleSelectFile(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    //     // update file selected
-    //     const {value} = event.target
-    //     setSource({
-    //         ...source,
-    //         file_selected: value,
-    //     })
-    // }
-
-    // const handleChangePart = (event: ChangeEvent<{ value: unknown }>) => {
-    //     const {options} = event.target as HTMLSelectElement;
-    //     const value: string[] = [];
-    //     for (let i = 0, l = options.length; i < l; i += 1) {
-    //         if (options[i].selected) {
-    //             value.push(options[i].value);
-    //         }
-    //     }
-    //     setSource({
-    //         ...source,
-    //         part_selected: value
-    //     });
-    // };
 
     const handleChangePart = (event: React.ChangeEvent<{ value: unknown }>) => {
         setSource({
@@ -247,14 +223,17 @@ export const SourcingDoc = () => {
                 <Box component={"h2"} bgcolor="secondary.main" color="primary.contrastText" p={2}>
                     Sourcing Document Auto
                 </Box>
+                <Box component={"h5"} bgcolor="primary.main" color="primary.contrastText" p={1}>
+                    Nomination Roadmap Data updates over-night after you input data into it.
+                </Box>
             </Grid>
             <form autoComplete={"off"}>
 
                 <Grid item xs={12}>
                     {/* file selection */}
                     <TextField
-                        name = "file_selected"
-                        label= "File Type"
+                        name="file_selected"
+                        label="File Type"
                         className={classes.textfield_basic}
                         select
                         value={source.file_selected}
@@ -274,8 +253,8 @@ export const SourcingDoc = () => {
                     </TextField>
                 </Grid>
 
-                <Grid item xs={12}>
                     {/* vendor selection */}
+                <Grid item xs={12}>
                     <TextField
                         label={"Vendor"}
                         disabled={(source.file_selected !== "nomination letter")}
@@ -296,7 +275,7 @@ export const SourcingDoc = () => {
                             value={source.part_selected}
                             onChange={handleChangePart}
                             input={<Input/>}
-                            disabled={(source.file_selected === "CBD" || source.file_selected === "supplier selection")}
+                            disabled={(source.file_selected === "supplier selection")}
                             renderValue={selected => (selected as string[]).join(', ')}
                             MenuProps={MenuProps}
                         >
@@ -307,6 +286,7 @@ export const SourcingDoc = () => {
                                 </MenuItem>
                             ))}
                         </Select>
+                        <FormHelperText>Default Select All</FormHelperText>
                     </FormControl>
                 </Grid>
 

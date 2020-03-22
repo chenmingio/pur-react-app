@@ -1,5 +1,5 @@
 import React, {Fragment, useState} from "react"
-import {Upload, Button, Icon} from "antd"
+// import {Upload, Button, Icon} from "antd"
 import Typography from "@material-ui/core/Typography";
 
 const url = `http://${document.domain}:${8080}`
@@ -30,11 +30,11 @@ export const Uploader = () => {
 
     return (
         <Fragment>
-            <Upload {...props}>
-                <Button>
-                    <Icon type="upload"/> Click to Upload
-                </Button>
-            </Upload>
+            {/*<Upload {...props}>*/}
+            {/*    <Button>*/}
+            {/*        <Icon type="upload"/> Click to Upload*/}
+            {/*    </Button>*/}
+            {/*</Upload>*/}
             <Typography variant="h6" color="inherit">
                 {msg}
             </Typography>

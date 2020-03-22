@@ -44,7 +44,6 @@ export const App = () => {
             <Header className={classes}/>
             <Sidebar className={classes}/>
             <Main/>
-
         </div>
     );
 }

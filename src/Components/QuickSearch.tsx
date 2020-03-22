@@ -3,6 +3,13 @@ import {Grid, MenuItem, TextField, Typography} from "@material-ui/core";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import axios from 'axios';
 
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -13,39 +20,50 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         textfield_small: {
             margin: theme.spacing(1, 1),
-            width: 100,
+            width: 300,
         },
         button: {
             margin: theme.spacing(5, 3),
         },
         title: {
             margin: theme.spacing(1, 1),
-        }
+        },
+        table: {
+            minWidth: 300,
+            maxWidth: 500,
+        },
     }),
 );
 
+type ROW = string[]
 
 type QS = {
     category: string
     keyword: string
-    result: {}[]
+    result: {
+        fields: string[]
+        rows: ROW[]
+    }
 }
 
-const initQS: QS = {
-    category: "",
+const initSearch: QS = {
+    category: "Project",
     keyword: "",
-    result: [],
+    result: {
+        fields: [],
+        rows: [],
+    },
 }
 export const QuickSearch = () => {
 
     const classes = useStyles();
-    const [QS, setQS] = useState(initQS)
+    const [search, setSearch] = useState(initSearch)
 
 
     const optionCategory: string[] = [
         "Project",
         "Vendor",
-        "Part",
+        "Part Number",
     ]
 
     const selectCategory = optionCategory.map(
@@ -58,8 +76,8 @@ export const QuickSearch = () => {
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = event.target
-        setQS({
-            ...QS,
+        setSearch({
+            ...search,
             [name]: value
         })
     }
@@ -74,8 +92,6 @@ export const QuickSearch = () => {
     }
 
 
-
-
     const fetchResult = () => {
         const url: string = `http://${document.domain}:8080`
         const url_string: string = `${url}/qs`
@@ -83,18 +99,40 @@ export const QuickSearch = () => {
             url: url_string,
             method: 'GET',
             params: {
-                category: QS.category,
-                keyword: QS.keyword,
+                category: search.category,
+                keyword: search.keyword,
             }
         }).then(
             (res) => {
                 console.log("[quick search] responsible below: ")
                 console.log(JSON.stringify(res.data))
-                // code here
-                }).catch(err => {
+                // guard in case result in None
+                if (res.data) {
+                    setSearch({
+                        ...search,
+                        result: res.data,
+                    })
+                }
+            }).catch(err => {
             console.log(err)
         })
     }
+
+    const {fields, rows} = search.result
+
+    const tableHead = fields.map(
+        (field: string, key: number) => <TableCell align="left" key={key}>{field}</TableCell>
+    )
+
+    const tableBody = rows.map((row, row_id) => (
+        <TableRow key={row_id}>
+            {row.map(
+                (cell: string, cell_id: number) => (
+                    <TableCell component="th" scope="row" key={cell_id}>{cell}</TableCell>
+                )
+            )}
+        </TableRow>
+    ))
 
 
     return (
@@ -105,10 +143,17 @@ export const QuickSearch = () => {
                         Quick Search
                     </Typography>
                 </Grid>
+                <Grid item xs={12}>
+                    <Typography className={classes.title} variant="subtitle2" color={"textPrimary"}>
+                        Support Fuzzy Search. Project/Vendor ID is auto detected if correct.<br/>
+                        SPACE will not be trimmed so that you can exclude ACED from ACE by input ACE[SPACE].
+
+                    </Typography>
+                </Grid>
                 <Grid item>
                     <TextField
                         name="category"
-                        value={QS.category}
+                        value={search.category}
                         label="Type"
                         select
                         className={classes.textfield_small}
@@ -120,7 +165,7 @@ export const QuickSearch = () => {
                 <Grid item xs={9}>
                     <TextField
                         name="keyword"
-                        value={QS.keyword}
+                        value={search.keyword}
                         label="Keyword"
                         className={classes.textfield_large}
                         onChange={handleChange}
@@ -128,6 +173,21 @@ export const QuickSearch = () => {
                     />
                 </Grid>
             </Grid>
+
+            <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            {tableHead}
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {tableBody}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </Fragment>
     )
 }
+
+

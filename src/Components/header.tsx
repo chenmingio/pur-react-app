@@ -11,7 +11,7 @@ export const Header = (props: any) => {
         <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
                 <Typography variant="h6" color="inherit" >
-                    Purchasing App
+                    Purchasing App DEMO
                 </Typography>
             </Toolbar>
         </AppBar>

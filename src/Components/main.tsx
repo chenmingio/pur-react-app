@@ -46,7 +46,7 @@ export const Main = () => {
             <div className={classes.appBarSpacer}/>
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
-                    <Grid item xs={12} md={10} lg={10}>
+                    <Grid item xs={12}>
                         <Paper className={classes.paper}>
                             <Router>
                                 <Switch>
